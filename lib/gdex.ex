@@ -1,4 +1,11 @@
 defmodule Gdex do
+
+  @typedoc """
+  Type that represents an amount of currency. If you wish to not lose precision,
+  use a binary string to hold the currency amount.
+  """
+  @type amount :: number | binary
+
   @doc """
   Performs a request to GDAX.
 
@@ -43,6 +50,30 @@ defmodule Gdex do
 
   @doc """
   Returns a `Stream` for the GDAX request.
+
+  ## Examples
+
+      iex> Gdex.Market.trades("BTC-USD") |> Gdex.stream! |> Enum.take(10)
+      [%{"price" => "4608.99000000", "side" => "sell", "size" => "0.00043285",
+         "time" => "2017-10-09T14:05:15.747Z", "trade_id" => 1236},
+       %{"price" => "4608.99000000", "side" => "sell", "size" => "0.02164262",
+         "time" => "2017-10-09T13:33:41.363Z", "trade_id" => 1235},
+       %{"price" => "4608.99000000", "side" => "sell", "size" => "1.00000000",
+         "time" => "2017-10-09T03:12:25.024Z", "trade_id" => 1234},
+       %{"price" => "4608.99000000", "side" => "sell", "size" => "0.02164262",
+         "time" => "2017-10-09T03:03:39.72Z", "trade_id" => 1233},
+       %{"price" => "4608.99000000", "side" => "sell", "size" => "0.21642620",
+         "time" => "2017-10-09T02:46:22.721Z", "trade_id" => 1232},
+       %{"price" => "4608.99000000", "side" => "sell", "size" => "0.10000000",
+         "time" => "2017-10-09T02:42:21.843Z", "trade_id" => 1231},
+       %{"price" => "6100.00000000", "side" => "sell", "size" => "0.96355230",
+         "time" => "2017-10-08T23:45:07.821Z", "trade_id" => 1230},
+       %{"price" => "99.99000000", "side" => "buy", "size" => "59.11504702",
+         "time" => "2017-10-08T23:44:14.153Z", "trade_id" => 1229},
+       %{"price" => "6100.00000000", "side" => "sell", "size" => "0.00163525",
+         "time" => "2017-10-08T22:23:17.799Z", "trade_id" => 1228},
+       %{"price" => "102.00000000", "side" => "sell", "size" => "0.09779473",
+         "time" => "2017-10-08T22:21:22.548Z", "trade_id" => 1227}]
   """
   @spec stream!(Gdex.Request.t, Keyword.t) :: Enumerable.t
   def stream!(req, config \\ []) do

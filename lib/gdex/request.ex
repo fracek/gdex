@@ -13,10 +13,15 @@ defmodule Gdex.Request do
 
   @spec new(atom, binary, Keyword.t) :: Gdex.Request.t
   def new(method, path, data \\ []) do
+    body = if Keyword.has_key?(data, :body) do
+      data[:body] |> Map.new |> Poison.encode!
+    else
+      ""
+    end
     %Gdex.Request{
       method: Atom.to_string(method),
       path: path,
-      body: data[:body] || "",
+      body: body,
       params: data[:params] || [],
       headers: data[:headers] || [],
       paginated: data[:paginated] || false,

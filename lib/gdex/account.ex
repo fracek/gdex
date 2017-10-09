@@ -4,6 +4,7 @@ defmodule Gdex.Account do
   @doc """
   Get a list of trading accounts.
   """
+  @spec list :: Request.t
   def list do
     Request.new(:GET, "/accounts")
   end
@@ -11,6 +12,7 @@ defmodule Gdex.Account do
   @doc """
   Get information for the account with the specified `id`.
   """
+  @spec get(binary) :: Request.t
   def get(id) do
     Request.new(:GET, "/accounts/#{id}")
   end
@@ -20,6 +22,7 @@ defmodule Gdex.Account do
 
   Can be streamed.
   """
+  @spec history(binary) :: Request.t
   def history(id) do
     Request.new(:GET, "/accounts/#{id}/ledger", paginated: true)
   end
@@ -29,7 +32,16 @@ defmodule Gdex.Account do
 
   Can be streamed.
   """
+  @spec holds(binary) :: Request.t
   def holds(id) do
     Request.new(:GET, "/accounts/#{id}/holds", paginated: true)
+  end
+
+  @doc """
+  Get the 30-day trailing volume for all products.
+  """
+  @spec volume :: Request.t
+  def volume do
+    Request.new(:GET, "/users/self/trailing-volume")
   end
 end

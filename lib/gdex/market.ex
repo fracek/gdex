@@ -15,7 +15,7 @@ defmodule Gdex.Market do
   Get a list of open orders for a product.
   """
   @spec orderbook(binary, orderbook_level) :: Request.t
-  def orderbook(product_id, level) do
+  def orderbook(product_id, level \\ 1) do
     Request.new(:GET, "/products/#{product_id}/book", params: [level: level])
   end
 

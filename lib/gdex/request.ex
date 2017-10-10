@@ -1,4 +1,5 @@
 defmodule Gdex.Request do
+  alias Gdex.Http
 
   defstruct [
     method: nil,
@@ -32,7 +33,7 @@ defmodule Gdex.Request do
   def request(%__MODULE__{method: method, body: body, paginated: false} = request, config) do
     url = make_url(request, config)
     headers = make_headers(request, config)
-    case do_request(method, url, body, headers) do
+    case Http.request(method, url, body, headers) do
       {:ok, {body, _}} -> {:ok, body}
       {:error, reason} -> {:error, reason}
     end
@@ -83,19 +84,6 @@ defmodule Gdex.Request do
     end
   end
 
-  defp do_request(method, url, body, headers) do
-    case HTTPoison.request(method, url, body, headers) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body, headers: headers}} ->
-	body = Poison.decode!(body)
-	{:ok, {body, headers}}
-      {:ok, %HTTPoison.Response{body: body}} ->
-	body = Poison.decode!(body)
-	{:error, {:gdax, body["message"]}}
-      {:error, %HTTPoison.Error{reason: reason}} ->
-	{:error, {:httpoison, reason}}
-    end
-  end
-
   defp perform_paginated_request(%__MODULE__{method: method, body: body} = request, config) do
     url = make_url(request, config)
     headers = make_headers(request, config)
@@ -111,7 +99,7 @@ defmodule Gdex.Request do
   end
 
   defp do_perform_paginated_request(original_request, config, method, url, body, headers) do
-    case do_request(method, url, body, headers) do
+    case Http.request(method, url, body, headers) do
       {:ok, {body, headers}} ->
 	cb_after = Map.new(headers) |> Map.get("cb-after")
 	{body, {original_request, config, cb_after}}
@@ -122,8 +110,8 @@ defmodule Gdex.Request do
     end
   end
 
-  defp process_page({nil, {_, _, nil}}) do
-    {:halt, nil}
+  defp process_page({items, {_, _, nil}}) do
+    {:halt, items}
   end
 
   defp process_page({nil, {request, config, cb_after}}) do

@@ -22,6 +22,7 @@ defmodule Gdex.Mixfile do
      {:poison, "~> 3.0"},
      {:dialyze, "~> 0.2", only: :dev, runtime: false},
      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+     {:mock, "~> 0.3.1", only: :test},
      {:excoveralls, "~> 0.7", only: :test}]
   end
 end

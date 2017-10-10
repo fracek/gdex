@@ -26,7 +26,7 @@ defmodule Gdex.Withdraw do
       currency: currency,
       coinbase_account_id: coinbase_account_id,
     ]
-    Request.new(:POST, "/withdrawals/coinbase-account", body: body)
+    Request.new(:POST, "/withdrawals/coinbase", body: body)
   end
 
 end

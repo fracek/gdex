@@ -42,14 +42,21 @@ defmodule Gdex.Order do
   @doc """
   Cancell all open orders.
   """
-  @spec cancel(binary | :all) :: Request.t
-  def cancel(:all) do
+  def cancel_all do
     Request.new(:DELETE, "/orders")
+  end
+
+  @doc """
+  Cancell all open orders for the specified product.
+  """
+  def cancel_all(product_id) do
+    Request.new(:DELETE, "/orders", params: [product_id: product_id])
   end
 
   @doc """
   Cancel a previously placed order.
   """
+  @spec cancel(binary) :: Request.t
   def cancel(id) do
     Request.new(:DELETE, "/orders/#{id}")
   end

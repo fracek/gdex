@@ -3,8 +3,14 @@ defmodule Gdex.Order do
 
   @type order_side :: :buy | :sell
   @type order_type :: :limit | :market | :stop
-  @type self_trade_prevention :: :dc | :co | :cn | :cb
-  @type time_in_force :: :gtc | :gtt | :ioc | :fok
+  @type self_trade_prevention :: :dc | :decrease_and_cancel
+    | :co | :cancel_oldest
+    | :cn | :cancel_newest
+    | :cb | :cancel_both
+  @type time_in_force :: :gtc | :good_till_canceled
+    | :gtt | :good_till_time
+    | :ioc | :immediate_or_cancel
+    | :fok | :fill_or_kill
   @type cancel_after :: :min | :hour | :day
 
   @type order_opt :: {:client_oid, binary}
@@ -28,6 +34,8 @@ defmodule Gdex.Order do
     body =
       [product_id: product_id, side: side]
       |> Keyword.merge(opts)
+      |> encode_time_in_force
+      |> encode_self_trade_prevention
     Request.new(:POST, "/orders", body: body)
   end
 
@@ -62,5 +70,44 @@ defmodule Gdex.Order do
   @spec get(binary) :: Request.t
   def get(id) do
     Request.new(:GET, "/orders/#{id}")
+  end
+
+  defp encode_time_in_force(body) do
+    if Keyword.has_key?(body, :time_in_force) do
+      time_in_force_to_string = fn
+	:good_till_canceled -> {nil, "GTC"}
+	:good_till_time -> {nil, "GTT"}
+	:immediate_or_cancel -> {nil, "IOC"}
+	:fill_or_kill -> {nil, "FOK"}
+	a -> {nil, a |> Atom.to_string |> String.upcase}
+      end
+      {_, new_body} = Keyword.get_and_update(body, :time_in_force, time_in_force_to_string)
+      new_body
+    else
+      body
+    end
+  end
+
+  defp encode_self_trade_prevention(body) do
+    body = case Keyword.pop(body, :self_trade_prevention) do
+      {nil, body} ->
+	body
+      {value, body} ->
+	Keyword.put_new(body, :stp, value)
+    end
+
+    if Keyword.has_key?(body, :stp) do
+      replace_stp = fn
+        :decrease_and_cancel -> {nil, :dc}
+	:cancel_oldest -> {nil, :co}
+	:cancel_newest -> {nil, :cn}
+	:cancel_both -> {nil, :cb}
+	a -> {nil, a}
+      end
+      {_, new_body} = Keyword.get_and_update(body, :stp, replace_stp)
+      new_body
+    else
+      body
+    end
   end
 end

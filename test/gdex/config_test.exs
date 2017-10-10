@@ -1,5 +1,5 @@
 defmodule Gdex.ConfigTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   test "default config has auth keys" do
     config = Gdex.Config.new()

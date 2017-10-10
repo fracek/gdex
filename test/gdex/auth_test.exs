@@ -1,5 +1,5 @@
 defmodule Gdex.AuthTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   @secret "v25UWRskcjCkgzc+TbITV/iXtOwLXNXa82KYFM12QaSRzsq0bCyGDX84Z/GSCBJkDyuM/gYgSMAT566rnMJ5dw=="
 

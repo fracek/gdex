@@ -14,4 +14,15 @@ defmodule TestHelper do
       fun.()
     end
   end
+
+  defmacro with_send_request(req, do: body) do
+    quote do
+      with_mock(Gdex.Websocket.Client, [
+	    send_request: fn (_, unquote(req)) -> :ok end]) do
+	unquote(body)
+	assert called Gdex.Websocket.Client.send_request(:_, :_)
+      end
+    end
+  end
+
 end

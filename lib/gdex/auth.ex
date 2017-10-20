@@ -1,10 +1,28 @@
 defmodule Gdex.Auth do
+  def auth_map(config, method, path, body) do
+    case auth_fields(config, method, path, body) do
+      {:ok, nil} ->
+	{:ok, %{}}
+      {:ok, {key, sign, timestamp, passphrase}} ->
+	{:ok, %{"key" => key, "signature" => sign, "timestamp" => timestamp,
+		"passphrase" => passphrase}}
+      {:error, error} ->
+	{:error, error}
+    end
+  end
+
   def auth_headers(config, method, path, body) do
-    case validate_config(config) do
+    case auth_fields(config, method, path, body) do
       {:ok, nil} ->
 	{:ok, []}
-      {:ok, auth} ->
-	{:ok, make_auth_headers(auth, method, path, body)}
+      {:ok, {key, sign, timestamp, passphrase}} ->
+	headers = [
+	  "CB-ACCESS-KEY": key,
+	  "CB-ACCESS-SIGN": sign,
+	  "CB-ACCESS-TIMESTAMP": timestamp,
+	  "CB-ACCESS-PASSPHRASE": passphrase
+	]
+	{:ok, headers}
       {:error, error} ->
 	{:error, error}
     end
@@ -42,17 +60,17 @@ defmodule Gdex.Auth do
   defp validate_field(f) when is_binary(f), do: :ok
   defp validate_field(_), do: :error
 
-  defp make_auth_headers(auth, method, path, body) do
-    timestamp = :os.system_time(:second)
-    method = String.upcase(method)
-    signature = sign_request(auth.api_secret, timestamp, method, path, body)
-
-
-    ["CB-ACCESS-KEY": auth.api_key,
-     "CB-ACCESS-SIGN": signature,
-     "CB-ACCESS-TIMESTAMP": timestamp,
-     "CB-ACCESS-PASSPHRASE": auth.api_passphrase
-    ]
+  defp auth_fields(config, method, path, body) do
+    case validate_config(config) do
+      {:ok, nil} ->
+	{:ok, nil}
+      {:ok, auth} ->
+	timestamp = :os.system_time(:second)
+	method = String.upcase(method)
+	signature = sign_request(auth.api_secret, timestamp, method, path, body)
+	{:ok, {auth.api_key, signature, timestamp, auth.api_passphrase}}
+      {:error, reason} ->
+	{:error, reason}
+    end
   end
-
 end

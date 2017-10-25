@@ -56,7 +56,7 @@ defmodule Gdex.Websocket.ClientTest do
 
   setup do
     state = %{
-      gdax: State.new(self(), Config.new()),
+      gdax: State.new(self(), Config.new(), TestHelper.MockWebsocketClient),
       handler: MyHandler,
       handler_state: :initial_state,
     }
@@ -64,8 +64,9 @@ defmodule Gdex.Websocket.ClientTest do
   end
 
   test "send request to websocket" do
-    Gdex.Websocket.Client.send_request(%{pid: self()}, %{"test" => "abc"})
-    assert_received _
+    gdax = %{pid: self(), websocket_client: TestHelper.MockWebsocketClient}
+    Gdex.Websocket.Client.send_request(gdax, %{"test" => "abc"})
+    assert_received {:text, _}
   end
 
   test "call handler callback on connect", %{state: state} do

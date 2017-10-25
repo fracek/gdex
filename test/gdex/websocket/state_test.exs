@@ -4,7 +4,7 @@ defmodule Gdex.Websocket.StateTest do
   alias Gdex.Config
 
   setup do
-    state = State.new(self(), Config.new())
+    state = State.new(self(), Config.new(), TestHelper.MockWebsocketClient)
     %{state: state}
   end
 

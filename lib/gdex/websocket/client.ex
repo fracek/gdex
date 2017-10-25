@@ -4,7 +4,7 @@ defmodule Gdex.Websocket.Client do
 
   @behaviour :websocket_client
 
-  @default_opts [keepalive: 10_000]
+  @default_opts [keepalive: 10_000, websocket_client: :websocket_client]
 
   @spec start_link(any, any, Keyword.t) :: any
   def start_link(message_handler, initial_state, opts \\ []) do
@@ -16,23 +16,24 @@ defmodule Gdex.Websocket.Client do
       handler: message_handler,
       handler_state: initial_state,
       config: config,
+      websocket_client: opts[:websocket_client],
     }
-    :websocket_client.start_link(config[:websocket_url], __MODULE__, state, keeyalive: opts[:keepalive])
+    state.websocket_client.start_link(config[:websocket_url], __MODULE__, state, keeyalive: opts[:keepalive])
   end
 
   @doc """
   Send json request to gdax.
   """
-  def send_request(%{pid: pid} = _gdax, request) do
+  def send_request(%{pid: pid, websocket_client: client} = _gdax, request) do
     message = Poison.encode!(request)
-    :websocket_client.cast(pid, {:text, message})
+    client.cast(pid, {:text, message})
   end
 
   # Callbacks
 
   @doc false
-  def init(%{handler: handler, handler_state: handler_state, config: config}) do
-    gdax = State.new(self(), config)
+  def init(%{handler: handler, handler_state: handler_state, config: config, websocket_client: websocket_client}) do
+    gdax = State.new(self(), config, websocket_client)
     {:reconnect, %{gdax: gdax, handler: handler, handler_state: handler_state}}
   end
 

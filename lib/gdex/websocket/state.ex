@@ -4,10 +4,15 @@ defmodule Gdex.Websocket.State do
   """
   @behaviour Access
 
-  defstruct [:pid, :config, :channels]
+  defstruct [:pid, :config, :websocket_client, :channels]
 
-  def new(pid, config) do
-    %__MODULE__{pid: pid, config: config, channels: %{}}
+  def new(pid, config, websocket_client) do
+    %__MODULE__{
+      pid: pid,
+      config: config,
+      websocket_client: websocket_client,
+      channels: %{}
+    }
   end
 
   def update(state, %{"type" => "subscriptions", "channels" => channels}) do

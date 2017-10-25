@@ -25,4 +25,10 @@ defmodule TestHelper do
     end
   end
 
+
+  defmodule MockWebsocketClient do
+    def cast(pid, {:text, message}) do
+      send pid, {:text, message}
+    end
+  end
 end

@@ -9,7 +9,7 @@ defmodule Gdex.Websocket.SubscribeTest do
   @secret "v25UWRskcjCkgzc+TbITV/iXtOwLXNXa82KYFM12QaSRzsq0bCyGDX84Z/GSCBJkDyuM/gYgSMAT566rnMJ5dw=="
 
   setup do
-    gdax = State.new(self(), Config.new())
+    gdax = State.new(self(), Config.new(), TestHelper.MockWebsocketClient)
     %{gdax: gdax}
   end
 

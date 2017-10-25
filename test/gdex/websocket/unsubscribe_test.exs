@@ -8,7 +8,7 @@ defmodule Gdex.Websocket.UnsubscribeTest do
   use ExUnit.Case, async: false
 
   setup do
-    gdax = State.new(self(), Config.new())
+    gdax = State.new(self(), Config.new(), TestHelper.MockWebsocketClient)
     %{gdax: gdax}
   end
 

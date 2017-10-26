@@ -32,4 +32,13 @@ defmodule Gdex.Websocket.State do
 
   def fetch(state, key)
   defdelegate fetch(state, key), to: Map
+
+  def get(state, key, default)
+  defdelegate get(state, key, default), to: Map
+
+  def get_and_update(state, key, fun)
+  defdelegate get_and_update(state, key, fun), to: Map
+
+  def pop(state, key)
+  defdelegate pop(state, key), to: Map
 end

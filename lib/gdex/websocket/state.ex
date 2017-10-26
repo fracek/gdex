@@ -6,6 +6,12 @@ defmodule Gdex.Websocket.State do
 
   defstruct [:pid, :config, :websocket_client, :channels]
 
+  @type t :: %__MODULE__{}
+
+  @doc """
+  Create a new `State`.
+  """
+  @spec new(pid, Config.t, any) :: State.t
   def new(pid, config, websocket_client) do
     %__MODULE__{
       pid: pid,
@@ -15,6 +21,10 @@ defmodule Gdex.Websocket.State do
     }
   end
 
+  @doc """
+  Update `state` with the information contained in the message.
+  """
+  @spec update(Gdex.Websocket.State.t, Map.t) :: Gdex.Websocket.State.t
   def update(state, %{"type" => "subscriptions", "channels" => channels}) do
     new_channels = Enum.reduce(channels, %{}, fn (ch, channels) ->
       name = ch["name"] |> String.to_atom

@@ -1,4 +1,9 @@
 defmodule Gdex.Websocket.Client do
+  @moduledoc ~S"""
+  This module handles the connection to the GDAX Websocket endpoint, while
+  delegating events to the specified websocket handler.
+  """
+
   alias Gdex.Config
   alias Gdex.Websocket.State
 
@@ -6,6 +11,21 @@ defmodule Gdex.Websocket.Client do
 
   @default_opts [keepalive: 10_000, websocket_client: :websocket_client]
 
+  @doc """
+  Connect to GDAX and delegate event handling to `message_handler`.
+
+  ## Options
+
+  * `:config` - the config to use, see `Gdex.Config`
+
+  ## Examples
+
+      defmodule MyHandler do
+        use Gdex.Websocket
+      end
+
+      {:ok, pid} = Gdex.Websocket.Client.start_link(MyHandler, [])
+  """
   @spec start_link(any, any, Keyword.t) :: any
   def start_link(message_handler, initial_state, opts \\ []) do
     opts = Keyword.merge(@default_opts, opts)
@@ -24,6 +44,7 @@ defmodule Gdex.Websocket.Client do
   @doc """
   Send json request to gdax.
   """
+  @spec send_request(Gdex.Websocket.State.t, Map.t) :: :ok
   def send_request(%{pid: pid, websocket_client: client} = _gdax, request) do
     message = Poison.encode!(request)
     client.cast(pid, {:text, message})
@@ -74,7 +95,7 @@ defmodule Gdex.Websocket.Client do
     {:ok, %{state | handler_state: new_handler_state, gdax: new_gdax}}
   end
 
-  def websocket_handler(_message, _conn, state) do
+  def websocket_handle(_message, _conn, state) do
     {:ok, state}
   end
 end

@@ -1,16 +1,20 @@
 defmodule Gdex.Mixfile do
   use Mix.Project
 
+  @version "0.1.0"
+  @source_url "https://github.com/fracek/gdex"
+
   def project do
     [app: :gdex,
-     version: "0.1.0",
+     version: @version,
      elixir: "~> 1.4",
-     build_embedded: Mix.env == :prod,
+     name: "Gdex",
+     package: package(),
      start_permanent: Mix.env == :prod,
      test_coverage: [tool: ExCoveralls],
      deps: deps(),
-     name: "Gdex",
-     source_url: "https://github.com/fracek/gdex"]
+     docs: docs(),
+     source_url: @source_url]
   end
 
   def application do
@@ -25,5 +29,15 @@ defmodule Gdex.Mixfile do
      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
      {:mock, "~> 0.3.1", only: :test},
      {:excoveralls, "~> 0.7", only: :test}]
+  end
+
+  defp package do
+    %{licenses: ["MIT"],
+      maintainers: ["Francesco Ceccon"],
+      links: %{"GitHub": @source_url}}
+  end
+
+  defp docs do
+    [main: "Gdex", source_ref: "v#{@version}", source_url: @source_url]
   end
 end

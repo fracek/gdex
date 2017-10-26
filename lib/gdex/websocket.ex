@@ -1,4 +1,6 @@
 defmodule Gdex.Websocket do
+  @type channel :: binary | atom
+
   defdelegate start_link(handler, state, opts \\ []), to: Gdex.Websocket.Client
 
   defmacro __using__(_) do
@@ -15,9 +17,12 @@ defmodule Gdex.Websocket do
     end
   end
 
-  defmacro is_channel(channel) do
+  @doc """
+  Returns `true` if `term` is a valid channel term, otherwise returns `false`.
+  """
+  defmacro is_channel(term) do
     quote do
-      is_atom(unquote(channel)) or is_binary(unquote(channel))
+      is_atom(unquote(term)) or is_binary(unquote(term))
     end
   end
 end

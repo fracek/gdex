@@ -1,11 +1,27 @@
 defmodule Gdex.Websocket.Unsubscribe do
+  @moduledoc "Functions to send unsubscribe messages to GDAX."
+
   alias Gdex.Websocket.Client
   import Gdex.Websocket, only: [is_channel: 1]
 
+  @type channels :: Gdex.Websocket.channel | [Gdex.Websocket.channel]
+  @type product_ids :: binary | [binary]
+
+  @doc """
+  Unsubscribe from `channels` for the given `product_ids`.
+
+  If `products_ids` is empty, unsubscribe from `channels` for all subscribed
+  products.
+  """
+  @spec unsubscribe(Gdex.Websocket.State.t, channels, product_ids) :: :ok
   def unsubscribe(gdax, channels, product_ids \\ []) do
     do_unsubscribe(gdax, channels, product_ids)
   end
 
+  @doc """
+  Send the `request` to `gdax`.
+  """
+  @spec unsubscribe_raw(Gdex.Websocket.State.t, Map.t) :: :ok
   def unsubscribe_raw(gdax, request) do
     Client.send_request(gdax, request)
   end

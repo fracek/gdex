@@ -1,4 +1,16 @@
 defmodule Gdex.Auth do
+  @moduledoc """
+  This module handles authentication on GDAX.
+  """
+
+  @doc """
+  Returns a `Map` containing the fields needed to authenticate on GDAX.
+
+  ## Examples
+
+      auth_map(config, :GET, "/", "")
+      #=> %{"key" => "...", "signature" => "...", "timestamp" => "...", "passphrase" => "..."}
+  """
   def auth_map(config, method, path, body) do
     case auth_fields(config, method, path, body) do
       {:ok, nil} ->
@@ -11,6 +23,16 @@ defmodule Gdex.Auth do
     end
   end
 
+  @doc """
+  Returns the headers needed to authenticate on GDAX.
+
+  ## Examples
+
+      auth_headers(config, :GET, "/", "")
+      #=> ["CB-ACCESS-KEY": "...", "CB-ACCESS-SIGN": "...", "CB-ACCESS-TIMESTAMP": "...",
+      #..  "CB-ACCESS-PASSPHRASE": "..."]
+
+  """
   def auth_headers(config, method, path, body) do
     case auth_fields(config, method, path, body) do
       {:ok, nil} ->
@@ -28,6 +50,7 @@ defmodule Gdex.Auth do
     end
   end
 
+  @doc false
   def sign_request(secret_key, timestamp, method, path, body) do
     hmac_key = Base.decode64!(secret_key)
     message = "#{timestamp}#{method}#{path}#{body}"
@@ -36,6 +59,7 @@ defmodule Gdex.Auth do
     |> Base.encode64
   end
 
+  @doc false
   def validate_config(config) do
     api_key = Map.get(config, :api_key)
     api_secret = Map.get(config, :api_secret)

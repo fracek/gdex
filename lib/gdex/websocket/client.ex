@@ -38,7 +38,7 @@ defmodule Gdex.Websocket.Client do
       config: config,
       websocket_client: opts[:websocket_client],
     }
-    state.websocket_client.start_link(config[:websocket_url], __MODULE__, state, keeyalive: opts[:keepalive])
+    state.websocket_client.start_link(config[:websocket_url], __MODULE__, [state], keeyalive: opts[:keepalive])
   end
 
   @doc """
@@ -53,7 +53,7 @@ defmodule Gdex.Websocket.Client do
   # Callbacks
 
   @doc false
-  def init(%{handler: handler, handler_state: handler_state, config: config, websocket_client: websocket_client}) do
+  def init([%{handler: handler, handler_state: handler_state, config: config, websocket_client: websocket_client}]) do
     gdax = State.new(self(), config, websocket_client)
     {:reconnect, %{gdax: gdax, handler: handler, handler_state: handler_state}}
   end

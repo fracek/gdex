@@ -17,7 +17,7 @@ defmodule Gdex.Websocket.Subscribe do
     opts = Keyword.merge(@default_opts, opts)
     request = if opts[:authenticate] do
       {:ok, auth} = Auth.auth_map(
-	opts[:config], @auth_method, @auth_path, @auth_body
+	gdax[:config], @auth_method, @auth_path, @auth_body
       )
       Map.merge(request, auth)
     else

@@ -29,14 +29,13 @@ defmodule Gdex.Websocket.SubscribeTest do
 			"key" => _,
 			"passphrase" => _,
 			"timestamp" => _}) do
-      opts = [
-	authenticate: true,
-	config: Config.new(
-	  api_key: "a1b2c3d4",
-	  api_secret: @secret,
-	  api_passphrase: "passphrase"
-	)
-      ]
+      config = Config.new(
+	api_key: "a1b2c3d4",
+	api_secret: @secret,
+	api_passphrase: "passphrase"
+      )
+      gdax = Map.put(gdax, :config, config)
+      opts = [authenticate: true]
       Subscribe.subscribe(gdax, :heartbeat, "BTC-USD", opts)
     end
   end

@@ -1,4 +1,4 @@
-# GDEX: An elixir client for GDAX
+# GDEX: GDAX Rest and Websocket Client for Elixir
 
 ## Getting Started
 
@@ -26,6 +26,38 @@ Some operations can stream the response:
 Gdex.Market.trades("BTC-USD") |> Gdex.stream! #=> #Function<50.36144841/2 in Stream.resource/3>
 ```
 
+## Websocket Client
+
+Define a module that uses the `Gdex.Websocket` behaviour:
+
+```elixir
+defmodule MyHandler do
+  use Gdex.Websocket
+
+  def handle_connect(gdax, state) do
+    IO.puts "Connected!"
+    subscribe(gdax, :level2, ["BTC-USD", "BTC-EUR"], authenticate: true)
+    {:ok, state}
+  end
+
+  def handle_message(message, _gdax, state) do
+    IO.puts "Received message #{inspect message}"
+    {:ok, state}
+  end
+
+  def handle_disconnect(_reason, _gdax, state) do
+    IO.puts "Disconnected"
+    {:ok, state}
+  end
+
+  def handle_info(message, _gdax, state) do
+    IO.puts "INFO: #{inspect message}"
+    {:ok, state}
+  end
+end
+```
+
+Then start the websocket client and pass your handler: `Gdex.Websocket.start_link(MyHandler, initial_state)`.
 
 ## Configuration
 
@@ -35,7 +67,7 @@ variables in your `config/config.exs` file:
 ```elixir
 config :gdex, api_key: "YOUR_API_KEY",
               api_secret: "YOUR_API_SECRET",
-	      api_passphrase: "YOUR_API_PASSPHRASE"
+              api_passphrase: "YOUR_API_PASSPHRASE"
 ```
 
 Alternatively, you can pass a configuration when performing a request:

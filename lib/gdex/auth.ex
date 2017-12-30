@@ -89,7 +89,7 @@ defmodule Gdex.Auth do
       {:ok, nil} ->
 	{:ok, nil}
       {:ok, auth} ->
-	timestamp = :os.system_time(:second)
+	timestamp = System.system_time(:second)
 	method = String.upcase(method)
 	signature = sign_request(auth.api_secret, timestamp, method, path, body)
 	{:ok, {auth.api_key, signature, timestamp, auth.api_passphrase}}

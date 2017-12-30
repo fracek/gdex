@@ -14,6 +14,7 @@ defmodule Gdex.Mixfile do
      test_coverage: [tool: ExCoveralls],
      deps: deps(),
      docs: docs(),
+     description: description(),
      source_url: @source_url]
   end
 
@@ -32,12 +33,16 @@ defmodule Gdex.Mixfile do
   end
 
   defp package do
-    %{licenses: ["MIT"],
+    %{licenses: ["Apache 2.0"],
       maintainers: ["Francesco Ceccon"],
       links: %{"GitHub": @source_url}}
   end
 
   defp docs do
     [main: "Gdex", source_ref: "v#{@version}", source_url: @source_url]
+  end
+
+  defp description do
+    "REST and Websocket client for GDAX Exchange"
   end
 end

@@ -1,5 +1,7 @@
 # GDEX: GDAX Rest and Websocket Client for Elixir
 
+[![Build Status](https://travis-ci.org/fracek/gdex.svg?branch=master)](https://travis-ci.org/fracek/gdex) [![Hex.pm](https://img.shields.io/hexpm/v/gdex.svg)](https://hex.pm/packages/gdex)
+
 ## Getting Started
 
 You can install GDEX from Hex:

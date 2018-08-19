@@ -8,8 +8,8 @@ defmodule Gdex.Config do
   @type t :: %{} | Map.t
 
   @defaults %{
-    rest_url: "https://api.gdax.com/",
-    websocket_url: "wss://ws-feed.gdax.com/",
+    rest_url: "https://api.pro.coinbase.com/",
+    websocket_url: "wss://ws-feed.pro.coinbase.com/",
     api_key: nil,
     api_secret: nil,
     api_passphrase: nil,

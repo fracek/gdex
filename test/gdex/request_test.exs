@@ -29,7 +29,7 @@ defmodule Gdex.RequestTest do
     request = Gdex.Request.new(:GET, "/path")
     response_body = Poison.encode!(%{test: "ok"})
 
-    with_http_response "GET", "https://api.gdax.com/path", {response_body, []}, fn ->
+    with_http_response "GET", "https://api.pro.coinbase.com/path", {response_body, []}, fn ->
       {:ok, body} = Gdex.Request.request(request, config)
       assert %{"test" => "ok"} == Poison.decode!(body)
     end
@@ -40,7 +40,7 @@ defmodule Gdex.RequestTest do
     request = Gdex.Request.new(:GET, "/path", paginated: true)
     response_body = Poison.encode!(%{page: "ok"})
 
-    with_http_response "GET", "https://api.gdax.com/path", {response_body, []}, fn ->
+    with_http_response "GET", "https://api.pro.coinbase.com/path", {response_body, []}, fn ->
       {:ok, _} = Gdex.Request.request(request, config)
     end
   end

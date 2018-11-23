@@ -7,7 +7,7 @@ defmodule Gdex.Mixfile do
   def project do
     [app: :gdex,
      version: @version,
-     elixir: "~> 1.4",
+     elixir: "~> 1.7",
      name: "Gdex",
      package: package(),
      start_permanent: Mix.env == :prod,
@@ -24,12 +24,12 @@ defmodule Gdex.Mixfile do
 
   defp deps do
     [{:httpoison, "~> 1.0"},
-     {:poison, "~> 3.0"},
+     {:poison, "~> 4.0"},
      {:websocket_client, "~> 1.3.0"},
      {:dialyze, "~> 0.2", only: :dev, runtime: false},
-     {:ex_doc, "~> 0.16", only: :dev, runtime: false},
-     {:mock, "~> 0.3.1", only: :test},
-     {:excoveralls, "~> 0.7", only: :test}]
+     {:ex_doc, "~> 0.19", only: :dev, runtime: false},
+     {:mock, "~> 0.3.2", only: :test},
+     {:excoveralls, "~> 0.10.3", only: :test}]
   end
 
   defp package do

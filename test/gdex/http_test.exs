@@ -3,7 +3,7 @@ defmodule Gdex.HttpTest do
   import Mock
 
   test "decode response body on success" do
-    body = Poison.encode!(%{"test": "success"})
+    body = Poison.encode!(%{test: "success"})
     response = %HTTPoison.Response{status_code: 200, body: body}
     with_mock(HTTPoison, [request: fn(_, _, _, _) -> {:ok, response} end]) do
       {:ok, {body, headers}} = Gdex.Http.request("GET", "https://example.org/test", "", [])
@@ -13,7 +13,7 @@ defmodule Gdex.HttpTest do
   end
 
   test "non 200 status code is an error" do
-    body = Poison.encode!(%{"message": "error"})
+    body = Poison.encode!(%{message: "error"})
     response = %HTTPoison.Response{status_code: 405, body: body}
     with_mock(HTTPoison, [request: fn(_, _, _, _) -> {:ok, response} end]) do
       {:error, {:gdax, error}} = Gdex.Http.request("GET", "https://example.org/test", "", [])

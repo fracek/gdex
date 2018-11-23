@@ -12,7 +12,7 @@ defmodule Gdex.ConfigTest do
     config = Gdex.Config.new(
       api_key: "abc",
       api_secret: "secret",
-      api_passphrase: "pass",
+      api_passphrase: "pass"
     )
     assert (Map.get config, :api_key) == "abc"
     assert (Map.get config, :api_secret) == "secret"

@@ -17,7 +17,7 @@ defmodule Gdex.AuthTest do
     config = Gdex.Config.new(
       api_key: "abc",
       api_secret: 123,
-      api_passphrase: "test",
+      api_passphrase: "test"
     )
     assert {:error, _} = Gdex.Auth.auth_headers(config, "GET", "/", "")
   end
